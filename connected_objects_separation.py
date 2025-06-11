@@ -13,24 +13,30 @@ def show_images(images, titles):
     plt.tight_layout()
     plt.show()
 
-# 1. Create a synthetic image with two connected circles
+# 1. Create a blank black image
 image = np.zeros((200, 200), dtype=np.uint8)
-cv2.circle(image, (70, 100), 40, 255, -1)
-cv2.circle(image, (120, 100), 40, 255, -1)
 
-# 2. Apply erosion to separate them
-kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+# 2. Define two triangles touching at their tips
+triangle1 = np.array([[50, 150], [100, 100], [50, 50]], np.int32)
+triangle2 = np.array([[150, 50], [100, 100], [150, 150]], np.int32)
+
+# 3. Draw both triangles filled in white
+cv2.drawContours(image, [triangle1], 0, 255, -1)
+cv2.drawContours(image, [triangle2], 0, 255, -1)
+
+# 4. Erode to break the connection
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
 eroded = cv2.erode(image, kernel, iterations=1)
 
-# 3. Then dilate to recover the original size without reconnecting
+# 5. Dilate to restore shape (without reconnecting)
 separated = cv2.dilate(eroded, kernel, iterations=1)
 
-# 4. Display results
+# 6. Show results
 show_images(
     [image, eroded, separated],
-    ['Original (Connected Objects)', 'After Erosion', 'After Erosion + Dilation (Separated)']
+    ['Original (Touching Triangles)', 'After Erosion', 'After Erosion + Dilation']
 )
 
-# 5. Optional: Count separated components
+# 7. Optional: Count components
 num_labels, labels = cv2.connectedComponents(separated)
-print(f"Number of separated objects: {num_labels - 1}")  # Subtract background
+print(f"Number of separated objects: {num_labels - 1}")

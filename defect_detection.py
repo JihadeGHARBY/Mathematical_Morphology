@@ -1,5 +1,3 @@
-# defect_detection.py
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +15,7 @@ def show_images(images, titles):
     plt.tight_layout()
     plt.show()
 
-# 1. Load your metal sheet image
+# 1. Load an metal sheet image
 img = cv2.imread('metal_sheet.png', cv2.IMREAD_GRAYSCALE)
 if img is None:
     raise FileNotFoundError("metal_sheet.png not found")
